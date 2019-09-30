@@ -8,6 +8,7 @@ namespace TennisPlayer.Api.Providers
     public class PlayerProvider : IPlayerProvider
     {
         private Payload _playersPayLoad;
+        private IDbContext _dbContext;
 
         public List<Player> Players
         {
@@ -19,6 +20,7 @@ namespace TennisPlayer.Api.Providers
 
         public PlayerProvider(IDbContext dbContext)
         {
+            _dbContext = dbContext;
             _playersPayLoad = dbContext.GetContext();
         }
 
@@ -35,6 +37,7 @@ namespace TennisPlayer.Api.Providers
         public void DeletePlayer(Player player)
         {
             _playersPayLoad.Players.Remove(player);
+            _dbContext.SaveContext(_playersPayLoad);
         }
     }
 }

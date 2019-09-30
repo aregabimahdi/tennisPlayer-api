@@ -66,7 +66,7 @@ namespace TennisPlayer.Api.test.Providers
             _dbContextMock = new Mock<IDbContext>();
             _dbContextMock.Setup(context => context.GetContext())
                 .Returns(GetPayload());
-
+            _dbContextMock.Setup(context => context.SaveContext(It.IsAny<Payload>()));
             _provider = new PlayerProvider(_dbContextMock.Object);
         }
 
@@ -110,6 +110,16 @@ namespace TennisPlayer.Api.test.Providers
 
             // Assert
             Assert.DoesNotContain(expectedPlayer, _provider.Players);
+        }
+
+        [Fact]
+        public void TestDeletePlayer_CallsSaveContextMethod_Once()
+        {
+            // Act
+            _provider.DeletePlayer(player1);
+
+            // Assert
+            _dbContextMock.Verify(m => m.SaveContext(It.IsAny<Payload>()), Times.Once);
         }
 
         private Payload GetPayload()
